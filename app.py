@@ -1,10 +1,6 @@
 import streamlit as st
-import json
 import time
 from typing import Dict, Any
-import plotly.graph_objects as go
-import plotly.express as px
-from datetime import datetime
 
 # Configuração da página
 st.set_page_config(
@@ -13,6 +9,15 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
+
+# Importações condicionais para evitar erros
+try:
+    import plotly.graph_objects as go
+    import plotly.express as px
+    PLOTLY_AVAILABLE = True
+except ImportError:
+    PLOTLY_AVAILABLE = False
+    st.warning("⚠️ Plotly não está disponível. Algumas visualizações serão simplificadas.")
 
 # CSS customizado para melhorar a aparência
 st.markdown("""
@@ -75,26 +80,6 @@ st.markdown("""
         text-align: center;
     }
     
-    .stat-item {
-        display: inline-block;
-        margin: 0 2rem;
-        text-align: center;
-    }
-    
-    .stat-value {
-        font-family: 'Poppins', sans-serif;
-        font-size: 2rem;
-        font-weight: 700;
-        color: #F59E0B;
-    }
-    
-    .stat-label {
-        font-family: 'Inter', sans-serif;
-        font-size: 0.875rem;
-        color: #D1D5DB;
-        margin-top: 0.5rem;
-    }
-    
     .welcome-section {
         background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.7)), 
                     url('https://images.unsplash.com/photo-1553729459-efe14ef6055d?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
@@ -152,7 +137,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Dados dos módulos
+# Dados dos módulos (simplificados para evitar erros)
 MODULES_DATA = [
     {
         "id": 1,
@@ -165,9 +150,9 @@ MODULES_DATA = [
             "neuro_insight": "Este módulo ativa simultaneamente as áreas de Broca (processamento linguístico), córtex pré-frontal (análise lógica) e hipocampo (formação de memórias), criando uma rede neural robusta para compreensão financeira.",
             "introduction": "Assim como um fazendeiro possui terras, equipamentos e colheitas, uma empresa possui recursos que geram valor futuro. Este módulo ensina o idioma básico das finanças.",
             "details": [
-                "Ativos: Recursos de Valor. São todos os bens e direitos controlados pela empresa.",
-                "Passivos: Obrigações Assumidas. Representam as dívidas e compromissos da empresa.",
-                "Patrimônio Líquido: O capital próprio da empresa, a diferença entre Ativos e Passivos."
+                "**Ativos**: Recursos de Valor. São todos os bens e direitos controlados pela empresa.",
+                "**Passivos**: Obrigações Assumidas. Representam as dívidas e compromissos da empresa.",
+                "**Patrimônio Líquido**: O capital próprio da empresa, a diferença entre Ativos e Passivos."
             ],
             "exercise": {
                 "type": "classification",
@@ -193,9 +178,9 @@ MODULES_DATA = [
             "neuro_insight": "Este módulo estimula o córtex parietal (processamento espacial) e o córtex pré-frontal dorsolateral (análise comparativa), desenvolvendo a capacidade de 'visualizar' estruturas patrimoniais complexas.",
             "introduction": "Vamos aprofundar nossa análise, aprendendo a interpretar a 'fotografia' financeira de uma empresa e a simular cenários para entender seu impacto.",
             "details": [
-                "Análise Vertical e Horizontal: Ferramentas para entender a composição e a evolução do patrimônio.",
-                "Indicadores de Liquidez: Medem a capacidade da empresa de pagar suas contas de curto prazo.",
-                "Capital de Giro: O 'fôlego' financeiro para as operações do dia a dia."
+                "**Análise Vertical e Horizontal**: Ferramentas para entender a composição e a evolução do patrimônio.",
+                "**Indicadores de Liquidez**: Medem a capacidade da empresa de pagar suas contas de curto prazo.",
+                "**Capital de Giro**: O 'fôlego' financeiro para as operações do dia a dia."
             ]
         }
     },
@@ -210,8 +195,8 @@ MODULES_DATA = [
             "neuro_insight": "Este módulo estimula o núcleo accumbens (centro de recompensa) e o córtex orbitofrontal (tomada de decisão), criando associações positivas com análise de performance financeira.",
             "introduction": "Agora vamos medir o sucesso. Os indicadores de rentabilidade mostram o quão eficientemente uma empresa transforma seus recursos em lucro.",
             "details": [
-                "Margem de Lucro: O percentual de cada venda que se transforma em lucro.",
-                "ROE (Retorno sobre Patrimônio): Mede o retorno que os sócios obtêm sobre seu capital investido."
+                "**Margem de Lucro**: O percentual de cada venda que se transforma em lucro.",
+                "**ROE (Retorno sobre Patrimônio)**: Mede o retorno que os sócios obtêm sobre seu capital investido."
             ]
         }
     },
@@ -226,27 +211,29 @@ MODULES_DATA = [
             "neuro_insight": "Este módulo integra todas as áreas cerebrais trabalhadas anteriormente, criando uma rede neural consolidada para tomada de decisões financeiras estratégicas.",
             "introduction": "Chegou o momento de aplicar todo o conhecimento adquirido. Este módulo final consolida sua jornada de aprendizado.",
             "details": [
-                "Integração de Conceitos: Conecte todos os conhecimentos adquiridos.",
-                "Análise Estratégica: Desenvolva visão sistêmica dos negócios.",
-                "Tomada de Decisão: Aplique os conceitos em situações reais."
+                "**Integração de Conceitos**: Conecte todos os conhecimentos adquiridos.",
+                "**Análise Estratégica**: Desenvolva visão sistêmica dos negócios.",
+                "**Tomada de Decisão**: Aplique os conceitos em situações reais."
             ]
         }
     }
 ]
 
-# Inicialização do estado da sessão
-if 'journey_started' not in st.session_state:
-    st.session_state.journey_started = False
-if 'completed_modules' not in st.session_state:
-    st.session_state.completed_modules = set()
-if 'stats' not in st.session_state:
-    st.session_state.stats = {
-        'sinapses': 0,
-        'insights': 0,
-        'aplicacoes': 0
-    }
-if 'current_module' not in st.session_state:
-    st.session_state.current_module = None
+# Inicialização do estado da sessão com tratamento de erro
+def init_session_state():
+    """Inicializa o estado da sessão com valores padrão"""
+    if 'journey_started' not in st.session_state:
+        st.session_state.journey_started = False
+    if 'completed_modules' not in st.session_state:
+        st.session_state.completed_modules = set()
+    if 'stats' not in st.session_state:
+        st.session_state.stats = {
+            'sinapses': 0,
+            'insights': 0,
+            'aplicacoes': 0
+        }
+    if 'current_module' not in st.session_state:
+        st.session_state.current_module = None
 
 def show_welcome_section():
     """Exibe a seção de boas-vindas"""
@@ -296,94 +283,93 @@ def show_module_card(module):
 
 def show_stats():
     """Exibe as estatísticas de gamificação"""
-    st.markdown("""
+    st.markdown(f"""
     <div class="stats-container">
         <h3 style="color: #F59E0B; font-family: 'Poppins', sans-serif; margin-bottom: 2rem;">🏆 Conquistas Neurocientíficas</h3>
         <div style="display: flex; justify-content: space-around; flex-wrap: wrap;">
-            <div class="stat-item">
+            <div style="text-align: center; margin: 1rem;">
                 <div style="font-size: 3rem;">🧠</div>
-                <div class="stat-value">{}</div>
-                <div class="stat-label">Sinapses Ativas</div>
+                <div style="font-size: 2rem; font-weight: bold; color: #F59E0B;">{st.session_state.stats['sinapses']}</div>
+                <div style="color: #D1D5DB;">Sinapses Ativas</div>
             </div>
-            <div class="stat-item">
+            <div style="text-align: center; margin: 1rem;">
                 <div style="font-size: 3rem;">⚡</div>
-                <div class="stat-value">{}</div>
-                <div class="stat-label">Insights Gerados</div>
+                <div style="font-size: 2rem; font-weight: bold; color: #F59E0B;">{st.session_state.stats['insights']}</div>
+                <div style="color: #D1D5DB;">Insights Gerados</div>
             </div>
-            <div class="stat-item">
+            <div style="text-align: center; margin: 1rem;">
                 <div style="font-size: 3rem;">🎯</div>
-                <div class="stat-value">{}</div>
-                <div class="stat-label">Aplicações Práticas</div>
+                <div style="font-size: 2rem; font-weight: bold; color: #F59E0B;">{st.session_state.stats['aplicacoes']}</div>
+                <div style="color: #D1D5DB;">Aplicações Práticas</div>
             </div>
         </div>
     </div>
-    """.format(
-        st.session_state.stats['sinapses'],
-        st.session_state.stats['insights'],
-        st.session_state.stats['aplicacoes']
-    ), unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
 
 def show_module_content(module_id):
     """Exibe o conteúdo detalhado de um módulo"""
-    module = next((m for m in MODULES_DATA if m["id"] == module_id), None)
-    if not module:
-        return
-    
-    content = module["content"]
-    
-    # Cabeçalho do módulo
-    col1, col2 = st.columns([1, 10])
-    with col1:
-        if st.button("← Voltar"):
-            st.session_state.current_module = None
-            st.rerun()
-    
-    with col2:
+    try:
+        module = next((m for m in MODULES_DATA if m["id"] == module_id), None)
+        if not module:
+            st.error("Módulo não encontrado!")
+            return
+        
+        content = module["content"]
+        
+        # Cabeçalho do módulo
+        col1, col2 = st.columns([1, 10])
+        with col1:
+            if st.button("← Voltar"):
+                st.session_state.current_module = None
+                st.rerun()
+        
+        with col2:
+            st.markdown(f"""
+            <h1 style="color: #F59E0B; font-family: 'Poppins', sans-serif;">
+                {module["icon"]} {content["title"]}
+            </h1>
+            """, unsafe_allow_html=True)
+        
+        # Insight neurocientífico
         st.markdown(f"""
-        <h1 style="color: #F59E0B; font-family: 'Poppins', sans-serif;">
-            {module["icon"]} {content["title"]}
-        </h1>
+        <div class="neuro-insight">
+            <h4 class="neuro-title">🧠 Insight Neurocientífico</h4>
+            <p>{content["neuro_insight"]}</p>
+        </div>
         """, unsafe_allow_html=True)
-    
-    # Insight neurocientífico
-    st.markdown(f"""
-    <div class="neuro-insight">
-        <h4 class="neuro-title">🧠 Insight Neurocientífico</h4>
-        <p>{content["neuro_insight"]}</p>
-    </div>
-    """, unsafe_allow_html=True)
-    
-    # Introdução
-    st.markdown(f"**Introdução:** {content['introduction']}")
-    
-    # Detalhes
-    st.markdown("**Conceitos Fundamentais:**")
-    for detail in content["details"]:
-        st.markdown(f"• {detail}")
-    
-    # Exercício (se disponível)
-    if "exercise" in content and content["exercise"]["type"] == "classification":
-        show_classification_exercise(content["exercise"], module_id)
-    
-    # Simulador de liquidez para módulo 2
-    if module_id == 2:
-        show_liquidity_simulator()
-    
-    # Simulador de rentabilidade para módulo 3
-    if module_id == 3:
-        show_profitability_simulator()
-    
-    # Botão de conclusão
-    completed = module_id in st.session_state.completed_modules
-    if not completed:
-        if st.button(f"✅ Marcar {module['title']} como Concluído", type="primary"):
-            st.session_state.completed_modules.add(module_id)
-            st.session_state.stats['sinapses'] += 1
-            st.success(f"Parabéns! Você concluiu o {module['title']}!")
-            time.sleep(1)
-            st.rerun()
-    else:
-        st.success(f"✅ {module['title']} concluído!")
+        
+        # Introdução
+        st.markdown(f"**Introdução:** {content['introduction']}")
+        
+        # Detalhes
+        st.markdown("**Conceitos Fundamentais:**")
+        for detail in content["details"]:
+            st.markdown(f"• {detail}")
+        
+        # Exercício (se disponível)
+        if "exercise" in content and content["exercise"]["type"] == "classification":
+            show_classification_exercise(content["exercise"], module_id)
+        
+        # Simuladores específicos por módulo
+        if module_id == 2:
+            show_liquidity_simulator()
+        elif module_id == 3:
+            show_profitability_simulator()
+        
+        # Botão de conclusão
+        completed = module_id in st.session_state.completed_modules
+        if not completed:
+            if st.button(f"✅ Marcar {module['title']} como Concluído", type="primary"):
+                st.session_state.completed_modules.add(module_id)
+                st.session_state.stats['sinapses'] += 1
+                st.success(f"Parabéns! Você concluiu o {module['title']}!")
+                time.sleep(1)
+                st.rerun()
+        else:
+            st.success(f"✅ {module['title']} concluído!")
+            
+    except Exception as e:
+        st.error(f"Erro ao carregar módulo: {str(e)}")
 
 def show_classification_exercise(exercise, module_id):
     """Exibe exercício de classificação"""
@@ -449,13 +435,25 @@ def show_liquidity_simulator():
         st.metric("Capital de Giro", f"R$ {capital_giro:,.0f} mil")
         st.markdown(f"<p style='color: {color}; font-weight: bold;'>{status}</p>", unsafe_allow_html=True)
         
-        # Gráfico
-        fig = go.Figure(data=[
-            go.Bar(name='Ativo Circulante', x=['Recursos'], y=[ativo_circulante], marker_color='green'),
-            go.Bar(name='Passivo Circulante', x=['Obrigações'], y=[passivo_circulante], marker_color='red')
-        ])
-        fig.update_layout(title="Comparação Ativo vs Passivo Circulante", yaxis_title="Valor (R$ mil)")
-        st.plotly_chart(fig, use_container_width=True)
+        # Gráfico simples se Plotly não estiver disponível
+        if PLOTLY_AVAILABLE:
+            try:
+                fig = go.Figure(data=[
+                    go.Bar(name='Ativo Circulante', x=['Recursos'], y=[ativo_circulante], marker_color='green'),
+                    go.Bar(name='Passivo Circulante', x=['Obrigações'], y=[passivo_circulante], marker_color='red')
+                ])
+                fig.update_layout(title="Comparação Ativo vs Passivo Circulante", yaxis_title="Valor (R$ mil)")
+                st.plotly_chart(fig, use_container_width=True)
+            except Exception as e:
+                st.error(f"Erro ao gerar gráfico: {str(e)}")
+        else:
+            # Visualização alternativa sem Plotly
+            st.markdown(f"""
+            **Comparação Visual:**
+            - Ativo Circulante: R$ {ativo_circulante:,} mil
+            - Passivo Circulante: R$ {passivo_circulante:,} mil
+            - Diferença: R$ {capital_giro:,} mil
+            """)
 
 def show_profitability_simulator():
     """Exibe simulador de rentabilidade para o módulo 3"""
@@ -498,81 +496,101 @@ def show_profitability_simulator():
         st.metric("Lucro", f"R$ {lucro:,.0f}")
         st.metric("Margem de Lucro", f"{margem:.1f}%")
         
-        # Gráfico de pizza
-        fig = go.Figure(data=[go.Pie(
-            labels=['Lucro', 'Custos'],
-            values=[lucro, custo],
-            hole=.3,
-            marker_colors=['green', 'red']
-        )])
-        fig.update_layout(title="Composição da Receita")
-        st.plotly_chart(fig, use_container_width=True)
+        # Gráfico simples se Plotly não estiver disponível
+        if PLOTLY_AVAILABLE:
+            try:
+                fig = go.Figure(data=[go.Pie(
+                    labels=['Lucro', 'Custos'],
+                    values=[lucro, custo],
+                    hole=.3,
+                    marker_colors=['green', 'red']
+                )])
+                fig.update_layout(title="Composição da Receita")
+                st.plotly_chart(fig, use_container_width=True)
+            except Exception as e:
+                st.error(f"Erro ao gerar gráfico: {str(e)}")
+        else:
+            # Visualização alternativa sem Plotly
+            st.markdown(f"""
+            **Composição da Receita:**
+            - Lucro: R$ {lucro:,.0f} ({margem:.1f}%)
+            - Custos: R$ {custo:,.0f} ({100-margem:.1f}%)
+            """)
 
 def main():
     """Função principal do aplicativo"""
-    # Cabeçalho
-    st.markdown('<h1 class="main-header">🧠 Fundamentos Financeiros</h1>', unsafe_allow_html=True)
-    st.markdown('<p style="text-align: center; color: #D1D5DB; font-family: Inter, sans-serif; font-size: 1.125rem;">Jornada do Espantalho</p>', unsafe_allow_html=True)
-    
-    # Barra de progresso
-    progress = len(st.session_state.completed_modules) / len(MODULES_DATA) * 100
-    st.progress(progress / 100)
-    st.markdown(f'<p style="text-align: center; color: #F59E0B; font-weight: bold;">{progress:.0f}% Concluído</p>', unsafe_allow_html=True)
-    
-    # Conteúdo principal
-    if not st.session_state.journey_started:
-        show_welcome_section()
-    elif st.session_state.current_module:
-        show_module_content(st.session_state.current_module)
-    else:
-        # Mapa de competências
-        st.markdown('<h2 style="text-align: center; color: #F59E0B; font-family: Poppins, sans-serif; margin: 2rem 0;">🗺️ Mapa de Competências Financeiras</h2>', unsafe_allow_html=True)
+    try:
+        # Inicializar estado da sessão
+        init_session_state()
         
-        # Módulos em grid
-        for i in range(0, len(MODULES_DATA), 2):
-            col1, col2 = st.columns(2)
-            with col1:
-                show_module_card(MODULES_DATA[i])
-            if i + 1 < len(MODULES_DATA):
-                with col2:
-                    show_module_card(MODULES_DATA[i + 1])
+        # Cabeçalho
+        st.markdown('<h1 class="main-header">🧠 Fundamentos Financeiros</h1>', unsafe_allow_html=True)
+        st.markdown('<p style="text-align: center; color: #D1D5DB; font-family: Inter, sans-serif; font-size: 1.125rem;">Jornada do Espantalho</p>', unsafe_allow_html=True)
         
-        # Estatísticas
-        show_stats()
+        # Barra de progresso
+        progress = len(st.session_state.completed_modules) / len(MODULES_DATA) * 100
+        st.progress(progress / 100)
+        st.markdown(f'<p style="text-align: center; color: #F59E0B; font-weight: bold;">{progress:.0f}% Concluído</p>', unsafe_allow_html=True)
         
-        # Verificar se todos os módulos foram concluídos
-        if len(st.session_state.completed_modules) == len(MODULES_DATA):
-            st.balloons()
-            st.markdown("""
-            <div style="background: linear-gradient(135deg, #F59E0B, #D97706); padding: 2rem; border-radius: 1rem; text-align: center; margin: 2rem 0;">
-                <h2 style="color: white; font-family: 'Poppins', sans-serif;">🎉 Parabéns!</h2>
-                <p style="color: white; font-size: 1.25rem;">Você concluiu sua jornada de fundamentos financeiros!</p>
-                <p style="color: white;">Sua mente agora possui as conexões neurais necessárias para compreender e aplicar conceitos financeiros fundamentais.</p>
-            </div>
-            """, unsafe_allow_html=True)
+        # Conteúdo principal
+        if not st.session_state.journey_started:
+            show_welcome_section()
+        elif st.session_state.current_module:
+            show_module_content(st.session_state.current_module)
+        else:
+            # Mapa de competências
+            st.markdown('<h2 style="text-align: center; color: #F59E0B; font-family: Poppins, sans-serif; margin: 2rem 0;">🗺️ Mapa de Competências Financeiras</h2>', unsafe_allow_html=True)
+            
+            # Módulos em grid
+            for i in range(0, len(MODULES_DATA), 2):
+                col1, col2 = st.columns(2)
+                with col1:
+                    show_module_card(MODULES_DATA[i])
+                if i + 1 < len(MODULES_DATA):
+                    with col2:
+                        show_module_card(MODULES_DATA[i + 1])
+            
+            # Estatísticas
+            show_stats()
+            
+            # Verificar se todos os módulos foram concluídos
+            if len(st.session_state.completed_modules) == len(MODULES_DATA):
+                st.balloons()
+                st.markdown("""
+                <div style="background: linear-gradient(135deg, #F59E0B, #D97706); padding: 2rem; border-radius: 1rem; text-align: center; margin: 2rem 0;">
+                    <h2 style="color: white; font-family: 'Poppins', sans-serif;">🎉 Parabéns!</h2>
+                    <p style="color: white; font-size: 1.25rem;">Você concluiu sua jornada de fundamentos financeiros!</p>
+                    <p style="color: white;">Sua mente agora possui as conexões neurais necessárias para compreender e aplicar conceitos financeiros fundamentais.</p>
+                </div>
+                """, unsafe_allow_html=True)
 
-    # Sidebar com informações
-    with st.sidebar:
-        st.markdown("### 📊 Progresso da Jornada")
-        st.metric("Módulos Concluídos", f"{len(st.session_state.completed_modules)}/{len(MODULES_DATA)}")
-        st.metric("Sinapses Ativas", st.session_state.stats['sinapses'])
-        st.metric("Insights Gerados", st.session_state.stats['insights'])
-        st.metric("Aplicações Práticas", st.session_state.stats['aplicacoes'])
-        
-        st.markdown("---")
-        st.markdown("### 🧠 Sobre a Jornada")
-        st.markdown("""
-        Esta jornada utiliza princípios de neurociência para otimizar o aprendizado de conceitos financeiros fundamentais.
-        
-        Cada módulo foi projetado para ativar diferentes áreas cerebrais, criando uma rede neural robusta para compreensão financeira.
-        """)
-        
-        if st.button("🔄 Reiniciar Jornada"):
-            st.session_state.journey_started = False
-            st.session_state.completed_modules = set()
-            st.session_state.stats = {'sinapses': 0, 'insights': 0, 'aplicacoes': 0}
-            st.session_state.current_module = None
-            st.rerun()
+        # Sidebar com informações
+        with st.sidebar:
+            st.markdown("### 📊 Progresso da Jornada")
+            st.metric("Módulos Concluídos", f"{len(st.session_state.completed_modules)}/{len(MODULES_DATA)}")
+            st.metric("Sinapses Ativas", st.session_state.stats['sinapses'])
+            st.metric("Insights Gerados", st.session_state.stats['insights'])
+            st.metric("Aplicações Práticas", st.session_state.stats['aplicacoes'])
+            
+            st.markdown("---")
+            st.markdown("### 🧠 Sobre a Jornada")
+            st.markdown("""
+            Esta jornada utiliza princípios de neurociência para otimizar o aprendizado de conceitos financeiros fundamentais.
+            
+            Cada módulo foi projetado para ativar diferentes áreas cerebrais, criando uma rede neural robusta para compreensão financeira.
+            """)
+            
+            if st.button("🔄 Reiniciar Jornada"):
+                st.session_state.journey_started = False
+                st.session_state.completed_modules = set()
+                st.session_state.stats = {'sinapses': 0, 'insights': 0, 'aplicacoes': 0}
+                st.session_state.current_module = None
+                st.rerun()
+                
+    except Exception as e:
+        st.error(f"Erro na aplicação: {str(e)}")
+        st.markdown("**Detalhes do erro para debug:**")
+        st.code(str(e))
 
 if __name__ == "__main__":
     main()

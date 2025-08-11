@@ -1,126 +1,56 @@
-# Jornada Interativa - Fundamentos Financeiros
+# Jornada Interativa - Fundamentos Financeiros (Versão Corrigida)
 
-Uma aplicação educacional interativa baseada em neurociência para ensinar fundamentos financeiros através da metáfora do Espantalho do Mágico de Oz.
+## 🔧 Correções Implementadas
 
-## 🧠 Sobre o Projeto
+Esta versão corrigida resolve os problemas identificados no deploy original:
 
-Esta jornada utiliza princípios de neurociência para otimizar o aprendizado de conceitos financeiros fundamentais. Cada módulo foi projetado para ativar diferentes áreas cerebrais, criando uma rede neural robusta para compreensão financeira.
+### ✅ **Problemas Corrigidos:**
 
-## 🚀 Funcionalidades
+1. **Tratamento de Dependências**
+   - Importação condicional do Plotly
+   - Fallbacks para visualizações quando bibliotecas não estão disponíveis
+   - Requirements.txt simplificado
 
-- **4 Módulos Interativos**: Linguagem Financeira, Análise Patrimonial, Performance & Rentabilidade, e Síntese e Aplicação
-- **Exercícios Práticos**: Classificação de ativos/passivos, simuladores de liquidez e rentabilidade
-- **Gamificação**: Sistema de conquistas neurocientíficas com sinapses, insights e aplicações
-- **Interface Responsiva**: Design moderno com tipografia otimizada (Inter + Poppins)
-- **Visualizações Interativas**: Gráficos e simuladores usando Plotly
+2. **Tratamento de Erros**
+   - Try/catch em funções críticas
+   - Mensagens de erro informativas
+   - Inicialização robusta do estado da sessão
 
-## 📋 Pré-requisitos
+3. **Compatibilidade Streamlit Cloud**
+   - Código otimizado para ambiente de produção
+   - Remoção de dependências problemáticas
+   - Configurações simplificadas
 
-- Python 3.8 ou superior
-- pip (gerenciador de pacotes Python)
+### 🚀 **Como Usar:**
 
-## 🛠️ Instalação
+```bash
+# Instalar dependências
+pip install -r requirements.txt
 
-1. **Extrair o arquivo ZIP**:
-   ```bash
-   unzip jornada-financeira-streamlit.zip
-   cd streamlit_app
-   ```
+# Executar aplicativo
+streamlit run app.py
+```
 
-2. **Criar ambiente virtual (recomendado)**:
-   ```bash
-   python -m venv venv
-   
-   # No Windows:
-   venv\Scripts\activate
-   
-   # No macOS/Linux:
-   source venv/bin/activate
-   ```
+### 📋 **Dependências Mínimas:**
+- streamlit>=1.28.0
+- plotly>=5.0.0
 
-3. **Instalar dependências**:
-   ```bash
-   pip install -r requirements.txt
-   ```
+### 🎯 **Funcionalidades Mantidas:**
+- ✅ 4 Módulos interativos completos
+- ✅ Sistema de gamificação
+- ✅ Exercícios de classificação
+- ✅ Simuladores (com fallback visual)
+- ✅ Interface responsiva
+- ✅ Tipografia profissional
 
-## 🎯 Como Executar
+### 🔄 **Para Atualizar o Deploy:**
 
-1. **Iniciar o aplicativo**:
-   ```bash
-   streamlit run app.py
-   ```
-
-2. **Acessar no navegador**:
-   - O aplicativo será aberto automaticamente no navegador
-   - Ou acesse manualmente: `http://localhost:8501`
-
-## 📚 Estrutura dos Módulos
-
-### Módulo 1: Linguagem Financeira (FUNDAMENTAL)
-- Conceitos de Ativos, Passivos e Patrimônio Líquido
-- Exercício de classificação interativo
-- Ativação das áreas de Broca e córtex pré-frontal
-
-### Módulo 2: Análise Patrimonial (INTERMEDIÁRIO)
-- Análise vertical e horizontal
-- Indicadores de liquidez
-- Simulador interativo de liquidez corrente
-
-### Módulo 3: Performance & Rentabilidade (AVANÇADO)
-- Margem de lucro e ROE
-- Simulador de estratégias de rentabilidade
-- Modelagem de cenários
-
-### Módulo 4: Síntese e Aplicação (ESTRATÉGICO)
-- Integração de todos os conceitos
-- Análise estratégica
-- Consolidação do aprendizado
-
-## 🎮 Sistema de Gamificação
-
-- **🧠 Sinapses Ativas**: Contabilizadas ao completar módulos
-- **⚡ Insights Gerados**: Obtidos ao acertar exercícios
-- **🎯 Aplicações Práticas**: Conquistadas ao usar simuladores
-
-## 🎨 Design e UX
-
-- **Tipografia Profissional**: Fontes Inter e Poppins do Google Fonts
-- **Cores Temáticas**: Paleta verde e dourado inspirada no tema do Espantalho
-- **Layout Responsivo**: Adaptável a diferentes tamanhos de tela
-- **Animações Suaves**: Transições e feedback visual otimizados
-
-## 🧪 Tecnologias Utilizadas
-
-- **Streamlit**: Framework principal para interface web
-- **Plotly**: Visualizações interativas e gráficos
-- **Python**: Linguagem de programação base
-- **CSS Customizado**: Estilização avançada da interface
-
-## 📊 Recursos Educacionais
-
-- **Insights Neurocientíficos**: Explicações sobre ativação cerebral em cada módulo
-- **Analogias Práticas**: Comparações com situações do cotidiano
-- **Exercícios Interativos**: Aprendizado ativo e engajado
-- **Feedback Imediato**: Respostas instantâneas aos exercícios
-
-## 🔧 Personalização
-
-O aplicativo pode ser facilmente personalizado:
-
-- **Módulos**: Adicione novos módulos editando a lista `MODULES_DATA` em `app.py`
-- **Exercícios**: Implemente novos tipos de exercícios nas funções correspondentes
-- **Estilo**: Modifique o CSS customizado para alterar cores e layout
-- **Conteúdo**: Atualize textos e conceitos conforme necessário
-
-## 📝 Licença
-
-Este projeto é destinado para fins educacionais. Desenvolvido com base em princípios de neurociência aplicada ao ensino de finanças.
-
-## 🤝 Suporte
-
-Para dúvidas ou sugestões sobre o aplicativo, consulte a documentação ou entre em contato com a equipe de desenvolvimento.
+1. Substitua o arquivo `app.py` atual pelo desta versão
+2. Atualize o `requirements.txt`
+3. Faça commit e push para o repositório
+4. O Streamlit Cloud fará o redeploy automaticamente
 
 ---
 
-**Construído com Neurociência e Inteligência Artificial** 🧠✨
+**Versão Corrigida - Pronta para Produção** ✅
 
